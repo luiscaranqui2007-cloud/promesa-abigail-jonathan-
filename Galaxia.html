@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Promesa Eterna | Abigail & Jonathan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+html,body{
+  margin:0; padding:0; background:#000; overflow:hidden; height:100%;
+  font-family:"Segoe UI", system-ui, sans-serif; color:#fff;
+}
+canvas{position:absolute; inset:0}
+
+/* CONTENIDO */
+.center{
+  position:absolute; top:26%; width:100%; text-align:center; z-index:2;
+}
+.center h1{
+  font-size:3rem;
+  text-shadow:0 0 25px #ff79c6, 0 0 45px #bd93f9;
+}
+.names{font-size:1.5rem; margin-top:8px; letter-spacing:2px}
+.date{opacity:.85; margin-top:4px}
+.promise{
+  max-width:85%; margin:16px auto 10px;
+  line-height:1.7; font-size:1.1rem;
+}
+.verse{
+  font-size:1.15rem; max-width:80%; margin:12px auto 0;
+  animation:fade 7s infinite;
+}
+@keyframes fade{0%{opacity:0}20%{opacity:1}80%{opacity:1}100%{opacity:0}}
+
+.music-btn{
+  position:fixed; right:20px; bottom:20px; z-index:3;
+  padding:12px 18px; border-radius:28px; cursor:pointer;
+  background:rgba(255,255,255,.18); border:1px solid #fff; color:#fff;
+}
+.music-btn:hover{background:rgba(255,255,255,.35)}
+</style>
+</head>
+<body>
+
+<canvas id="space"></canvas>
+
+<div class="center">
+  <h1>Promesa bajo el cielo de Dios 🌌</h1>
+  <div class="names">Abigail ❤️ Jonathan</div>
+  <div class="date">10 de enero de 2026</div>
+
+  <div class="promise">
+    En este día hacemos una promesa delante de Dios: caminar juntos con amor,
+    respeto y fidelidad. Elegimos cuidarnos, escucharnos y crecer,
+    poniendo a Dios en el centro de nuestra historia.
+    Que nuestro amor refleje siempre el amor de Cristo.
+  </div>
+
+  <div class="verse" id="verse"></div>
+</div>
+
+<button class="music-btn" onclick="toggleMusic()">🎵 Música</button>
+
+<audio id="music" loop>
+  <!-- Coloca aquí tu MP3 (ej: amor-real.mp3) -->
+  <source src="amor-real.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// ===== CANVAS =====
+const canvas = document.getElementById("space");
+const ctx = canvas.getContext("2d");
+function resize(){
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
+addEventListener("resize", resize);
+resize();
+
+const cx = () => canvas.width/2;
+const cy = () => canvas.height/2;
+
+// ===== ESTRELLAS (GALAXIA) =====
+const stars = Array.from({length:600},()=>({
+  a:Math.random()*Math.PI*2,
+  r:Math.random()*420,
+  s:Math.random()*0.0025+0.0006,
+  z:Math.random()*2
+}));
+
+// ===== PLANETAS =====
+const planets = [
+  { name:"Fe",        r:120, a:0, speed:0.002,  size:10, color:"#8be9fd" },
+  { name:"Amor",      r:180, a:1, speed:0.0016, size:12, color:"#ff79c6" },
+  { name:"Fidelidad", r:250, a:2, speed:0.0012, size:11, color:"#bd93f9" },
+  { name:"Esperanza", r:320, a:3, speed:0.0009, size:13, color:"#50fa7b" }
+];
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Estrellas
+  stars.forEach(s=>{
+    s.a += s.s;
+    const x = cx() + Math.cos(s.a)*s.r;
+    const y = cy() + Math.sin(s.a)*s.r;
+    ctx.fillStyle="#fff";
+    ctx.beginPath();
+    ctx.arc(x,y,s.z,0,Math.PI*2);
+    ctx.fill();
+  });
+
+  // Planetas
+  planets.forEach(p=>{
+    p.a += p.speed;
+    const x = cx() + Math.cos(p.a)*p.r;
+    const y = cy() + Math.sin(p.a)*p.r;
+
+    // planeta
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(x,y,p.size,0,Math.PI*2);
+    ctx.fill();
+
+    // brillo
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 15;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // texto
+    ctx.fillStyle="#fff";
+    ctx.font="14px Segoe UI";
+    ctx.textAlign="center";
+    ctx.fillText(p.name, x, y - p.size - 6);
+  });
+
+  requestAnimationFrame(draw);
+}
+draw();
+
+// ===== VERSÍCULOS =====
+const verses = [
+  "«El amor nunca deja de ser» — 1 Corintios 13:8",
+  "«Mejores son dos que uno» — Eclesiastés 4:9",
+  "«Sobre todo, vestíos de amor» — Colosenses 3:14",
+  "«Lo que Dios juntó, no lo separe el hombre» — Mateo 19:6",
+  "«Fuerte como la muerte es el amor» — Cantares 8:6"
+];
+let i=0;
+const verseEl=document.getElementById("verse");
+function nextVerse(){
+  verseEl.textContent=verses[i];
+  i=(i+1)%verses.length;
+}
+nextVerse();
+setInterval(nextVerse,7000);
+
+// ===== MÚSICA =====
+const music=document.getElementById("music");
+let playing=false;
+function toggleMusic(){
+  playing ? music.pause() : music.play();
+  playing=!playing;
+}
+</script>
+
+</body>
+</html>
