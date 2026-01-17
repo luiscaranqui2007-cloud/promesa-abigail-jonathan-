@@ -11,7 +11,7 @@ html,body{
 }
 canvas{position:absolute; inset:0}
 
-/* CONTENIDO */
+/* CONTENIDO CENTRAL */
 .center{
   position:absolute; top:26%; width:100%; text-align:center; z-index:2;
 }
@@ -22,21 +22,39 @@ canvas{position:absolute; inset:0}
 .names{font-size:1.5rem; margin-top:8px; letter-spacing:2px}
 .date{opacity:.85; margin-top:4px}
 .promise{
-  max-width:85%; margin:16px auto 10px;
-  line-height:1.7; font-size:1.1rem;
+  max-width:85%;
+  margin:16px auto 10px;
+  line-height:1.7;
+  font-size:1.1rem;
 }
 .verse{
-  font-size:1.15rem; max-width:80%; margin:12px auto 0;
+  font-size:1.15rem;
+  max-width:80%;
+  margin:12px auto 0;
   animation:fade 7s infinite;
 }
-@keyframes fade{0%{opacity:0}20%{opacity:1}80%{opacity:1}100%{opacity:0}}
-
-.music-btn{
-  position:fixed; right:20px; bottom:20px; z-index:3;
-  padding:12px 18px; border-radius:28px; cursor:pointer;
-  background:rgba(255,255,255,.18); border:1px solid #fff; color:#fff;
+@keyframes fade{
+  0%{opacity:0}
+  20%{opacity:1}
+  80%{opacity:1}
+  100%{opacity:0}
 }
-.music-btn:hover{background:rgba(255,255,255,.35)}
+
+/* BOTÓN MÚSICA */
+.music-btn{
+  position:fixed;
+  right:20px; bottom:20px;
+  z-index:3;
+  padding:12px 18px;
+  border-radius:28px;
+  cursor:pointer;
+  background:rgba(255,255,255,.18);
+  border:1px solid #fff;
+  color:#fff;
+}
+.music-btn:hover{
+  background:rgba(255,255,255,.35);
+}
 </style>
 </head>
 <body>
@@ -61,8 +79,8 @@ canvas{position:absolute; inset:0}
 <button class="music-btn" onclick="toggleMusic()">🎵 Música</button>
 
 <audio id="music" loop>
-  <!-- Coloca aquí tu MP3 (ej: amor-real.mp3) -->
-  <source src="amor-real.mp3" type="audio/mpeg">
+  <!-- Coloca aquí tu MP3 (ejemplo: amor-real.mp3) -->
+  <source src="C:\Users\cliente\Downloads\new west - those eyes ⧸⧸ sub. español.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -87,14 +105,18 @@ const stars = Array.from({length:600},()=>({
   z:Math.random()*2
 }));
 
-// ===== PLANETAS =====
+// ===== PLANETAS (COLORES BÍBLICOS) =====
 const planets = [
-  { name:"Fe",        r:120, a:0, speed:0.002,  size:10, color:"#8be9fd" },
-  { name:"Amor",      r:180, a:1, speed:0.0016, size:12, color:"#ff79c6" },
-  { name:"Fidelidad", r:250, a:2, speed:0.0012, size:11, color:"#bd93f9" },
-  { name:"Esperanza", r:320, a:3, speed:0.0009, size:13, color:"#50fa7b" }
+  { name:"Fe",        r:140, a:0, speed:0.0020, size:11, color:"#4aa3ff" }, // Azul
+  { name:"Amor",      r:210, a:1, speed:0.0016, size:13, color:"#c1121f" }, // Rojo
+  { name:"Fidelidad", r:290, a:2, speed:0.0012, size:12, color:"#f1c40f" }, // Dorado
+  { name:"Esperanza", r:370, a:3, speed:0.0009, size:12, color:"#2ecc71" }  // Verde
 ];
 
+// ===== DIOS AL CENTRO =====
+const god = { size:18, glow:30 };
+
+// ===== DIBUJO =====
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
@@ -103,11 +125,25 @@ function draw(){
     s.a += s.s;
     const x = cx() + Math.cos(s.a)*s.r;
     const y = cy() + Math.sin(s.a)*s.r;
-    ctx.fillStyle="#fff";
+    ctx.fillStyle="#ffffff";
     ctx.beginPath();
     ctx.arc(x,y,s.z,0,Math.PI*2);
     ctx.fill();
   });
+
+  // DIOS (CENTRO)
+  ctx.shadowColor = "#ffffff";
+  ctx.shadowBlur = god.glow;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath();
+  ctx.arc(cx(), cy(), god.size, 0, Math.PI*2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  ctx.fillStyle="#ffffff";
+  ctx.font="16px Segoe UI";
+  ctx.textAlign="center";
+  ctx.fillText("Dios", cx(), cy() - god.size - 12);
 
   // Planetas
   planets.forEach(p=>{
@@ -115,23 +151,17 @@ function draw(){
     const x = cx() + Math.cos(p.a)*p.r;
     const y = cy() + Math.sin(p.a)*p.r;
 
-    // planeta
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 18;
     ctx.fillStyle = p.color;
     ctx.beginPath();
     ctx.arc(x,y,p.size,0,Math.PI*2);
     ctx.fill();
-
-    // brillo
-    ctx.shadowColor = p.color;
-    ctx.shadowBlur = 15;
-    ctx.fill();
     ctx.shadowBlur = 0;
 
-    // texto
-    ctx.fillStyle="#fff";
+    ctx.fillStyle="#ffffff";
     ctx.font="14px Segoe UI";
-    ctx.textAlign="center";
-    ctx.fillText(p.name, x, y - p.size - 6);
+    ctx.fillText(p.name, x, y - p.size - 8);
   });
 
   requestAnimationFrame(draw);
